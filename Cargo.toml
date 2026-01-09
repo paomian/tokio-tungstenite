@@ -1,9 +1,17 @@
 [package]
 name = "tokio-tungstenite"
 description = "Tokio binding for Tungstenite, the Lightweight stream-based WebSocket implementation"
-categories = ["web-programming::websocket", "network-programming", "asynchronous", "concurrency"]
+categories = [
+    "web-programming::websocket",
+    "network-programming",
+    "asynchronous",
+    "concurrency",
+]
 keywords = ["websocket", "io", "web"]
-authors = ["Daniel Abramov <dabramov@snapview.de>", "Alexey Galakhov <agalakhov@snapview.de>"]
+authors = [
+    "Daniel Abramov <dabramov@snapview.de>",
+    "Alexey Galakhov <agalakhov@snapview.de>",
+]
 license = "MIT"
 homepage = "https://github.com/snapview/tokio-tungstenite"
 documentation = "https://docs.rs/tokio-tungstenite/0.28.0"
@@ -20,18 +28,41 @@ all-features = true
 default = ["connect", "handshake"]
 connect = ["stream", "tokio/net", "handshake"]
 handshake = ["tungstenite/handshake"]
-native-tls = ["native-tls-crate", "tokio-native-tls", "stream", "tungstenite/native-tls", "handshake"]
-native-tls-vendored = ["native-tls", "native-tls-crate/vendored", "tungstenite/native-tls-vendored"]
+native-tls = [
+    "native-tls-crate",
+    "tokio-native-tls",
+    "stream",
+    "tungstenite/native-tls",
+    "handshake",
+]
+native-tls-vendored = [
+    "native-tls",
+    "native-tls-crate/vendored",
+    "tungstenite/native-tls-vendored",
+]
 rustls-tls-native-roots = ["__rustls-tls", "rustls-native-certs"]
 rustls-tls-webpki-roots = ["__rustls-tls", "webpki-roots"]
-__rustls-tls = ["rustls", "rustls-pki-types", "tokio-rustls", "stream", "tungstenite/__rustls-tls", "handshake"]
+__rustls-tls = [
+    "rustls",
+    "rustls-pki-types",
+    "tokio-rustls",
+    "stream",
+    "tungstenite/__rustls-tls",
+    "handshake",
+]
+proxy = ["connect", "tokio/net", "base64", "dep:url"]
 stream = []
 url = ["tungstenite/url"]
 
 [dependencies]
 log = "0.4.17"
-futures-util = { version = "0.3.28", default-features = false, features = ["sink", "std"] }
+futures-util = { version = "0.3.28", default-features = false, features = [
+    "sink",
+    "std",
+] }
 tokio = { version = "1.0.0", default-features = false, features = ["io-util"] }
+base64 = { version = "0.21", optional = true }
+url = { version = "2.5", optional = true }
 
 [dependencies.tungstenite]
 version = "0.28.0"
@@ -70,10 +101,19 @@ version = "0.26.0"
 
 [dev-dependencies]
 futures-channel = "0.3.28"
-hyper = { version = "1.0", default-features = false, features = ["http1", "server"] }
+hyper = { version = "1.0", default-features = false, features = [
+    "http1",
+    "server",
+] }
 hyper-util = { version = "0.1", features = ["tokio"] }
 http-body-util = "0.1"
-tokio = { version = "1.27.0", default-features = false, features = ["io-std", "macros", "net", "rt-multi-thread", "time"] }
+tokio = { version = "1.27.0", default-features = false, features = [
+    "io-std",
+    "macros",
+    "net",
+    "rt-multi-thread",
+    "time",
+] }
 env_logger = "0.10.0"
 
 [[example]]
@@ -107,3 +147,7 @@ required-features = ["handshake"]
 [[example]]
 name = "interval-server"
 required-features = ["handshake"]
+
+[[example]]
+name = "client-proxy"
+required-features = ["proxy"]

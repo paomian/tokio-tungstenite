@@ -16,6 +16,8 @@ mod compat;
 #[cfg(feature = "connect")]
 mod connect;
 mod handshake;
+#[cfg(feature = "proxy")]
+mod proxy;
 #[cfg(feature = "stream")]
 mod stream;
 #[cfg(any(feature = "native-tls", feature = "__rustls-tls", feature = "connect"))]
@@ -57,11 +59,17 @@ pub use tls::{client_async_tls, client_async_tls_with_config};
 #[cfg(feature = "connect")]
 pub use connect::{connect_async, connect_async_with_config};
 
+#[cfg(all(feature = "connect", feature = "proxy"))]
+pub use connect::{connect_async_with_config_and_proxy, connect_async_with_proxy};
+
 #[cfg(all(any(feature = "native-tls", feature = "__rustls-tls"), feature = "connect"))]
 pub use connect::connect_async_tls_with_config;
 
 #[cfg(feature = "stream")]
 pub use stream::MaybeTlsStream;
+
+#[cfg(feature = "proxy")]
+pub use proxy::{open_tunnel, BoxedStream, ProxiedStream, Proxy};
 
 use tungstenite::protocol::CloseFrame;
 
@@ -78,7 +86,7 @@ use tungstenite::protocol::CloseFrame;
 /// This is typically used for clients who have already established, for
 /// example, a TCP connection to the remote server.
 #[cfg(feature = "handshake")]
-pub async fn client_async<'a, R, S>(
+pub async fn client_async<R, S>(
     request: R,
     stream: S,
 ) -> Result<(WebSocketStream<S>, Response), WsError>
@@ -92,7 +100,7 @@ where
 /// The same as `client_async()` but the one can specify a websocket configuration.
 /// Please refer to `client_async()` for more details.
 #[cfg(feature = "handshake")]
-pub async fn client_async_with_config<'a, R, S>(
+pub async fn client_async_with_config<R, S>(
     request: R,
     stream: S,
     config: Option<WebSocketConfig>,
