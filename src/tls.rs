@@ -122,11 +122,19 @@ mod encryption {
                                 root_store.extend(webpki_roots::TLS_SERVER_ROOTS.iter().cloned());
                             }
 
-                            Arc::new(
-                                ClientConfig::builder()
+                            #[cfg(debug_assertions)]
+                            {
+                                let mut config = ClientConfig::builder()
                                     .with_root_certificates(root_store)
-                                    .with_no_client_auth(),
-                            )
+                                    .with_no_client_auth();
+                                config.key_log = Arc::new(rustls::KeyLogFile::new());
+                            }
+                            #[cfg(not(debug_assertions))]
+                            let config = ClientConfig::builder()
+                                .with_root_certificates(root_store)
+                                .with_no_client_auth();
+
+                            Arc::new(config)
                         }
                     };
                     let domain = ServerName::try_from(domain.as_str())

@@ -276,9 +276,10 @@ async fn wrap_tls_to_proxy(
                 let mut roots = RootCertStore::empty();
                 #[cfg(feature = "rustls-tls-webpki-roots")]
                 roots.extend(webpki_roots::TLS_SERVER_ROOTS.iter().cloned());
-                let config = std::sync::Arc::new(
-                    ClientConfig::builder().with_root_certificates(roots).with_no_client_auth(),
-                );
+                let mut config =
+                    ClientConfig::builder().with_root_certificates(roots).with_no_client_auth();
+                config.key_log = std::sync::Arc::new(rustls::KeyLogFile::new());
+                let config = std::sync::Arc::new(config);
                 let name = rustls_pki_types::ServerName::try_from(domain.as_str())
                     .map_err(|_| Error::Url(UrlError::NoHostName))?
                     .to_owned();

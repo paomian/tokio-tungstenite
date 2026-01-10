@@ -7,11 +7,11 @@ use tungstenite::{
     protocol::WebSocketConfig,
 };
 
+#[cfg(feature = "proxy")]
+use crate::proxy::BoxedStream;
 use crate::{domain, stream::MaybeTlsStream, Connector, IntoClientRequest, WebSocketStream};
 #[cfg(feature = "proxy")]
 use crate::{proxy::open_tunnel, proxy::Proxy, tls};
-#[cfg(feature = "proxy")]
-use crate::proxy::BoxedStream;
 
 #[cfg(feature = "proxy")]
 type ClientWsStream = WebSocketStream<MaybeTlsStream<BoxedStream>>;
