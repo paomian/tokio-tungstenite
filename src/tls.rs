@@ -128,13 +128,16 @@ mod encryption {
                                     .with_root_certificates(root_store)
                                     .with_no_client_auth();
                                 config.key_log = Arc::new(rustls::KeyLogFile::new());
+                                Arc::new(config)
                             }
                             #[cfg(not(debug_assertions))]
-                            let config = ClientConfig::builder()
-                                .with_root_certificates(root_store)
-                                .with_no_client_auth();
+                            {
+                                let config = ClientConfig::builder()
+                                    .with_root_certificates(root_store)
+                                    .with_no_client_auth();
 
-                            Arc::new(config)
+                                Arc::new(config)
+                            }
                         }
                     };
                     let domain = ServerName::try_from(domain.as_str())
